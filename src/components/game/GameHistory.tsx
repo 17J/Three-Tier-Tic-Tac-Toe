@@ -45,7 +45,7 @@ const GameHistory = ({ games }: GameHistoryProps) => {
             </TableHeader>
             <TableBody>
               {games.map((game) => (
-                <TableRow key={game.id}>
+                <TableRow key={`game-${game.id}`}>
                   <TableCell>{formatDate(game.date)}</TableCell>
                   <TableCell>{game.player1} vs {game.player2}</TableCell>
                   <TableCell>
