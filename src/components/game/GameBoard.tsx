@@ -52,9 +52,10 @@ const GameBoard = ({ onGameEnd, currentPlayer, setCurrentPlayer }: GameBoardProp
     const nextPlayer = currentPlayer === 'X' ? 'O' : 'X';
     setCurrentPlayer(nextPlayer);
     
+    // Show toast with a reasonable duration to avoid stacking
     toast({
       title: `Player ${nextPlayer}'s turn`,
-      duration: 1500,
+      duration: 1000, // Shorter duration to avoid stacking
     });
   };
   
@@ -67,12 +68,13 @@ const GameBoard = ({ onGameEnd, currentPlayer, setCurrentPlayer }: GameBoardProp
   // Check for winner after each move
   useEffect(() => {
     const winner = checkWinner(board);
-    if (winner) {
+    if (winner && !gameOver) {
       setGameOver(true);
       if (winner === 'DRAW') {
         toast({
           title: "Game Over",
           description: "It's a draw!",
+          duration: 3000,
         });
         onGameEnd(null);
       } else {
@@ -81,11 +83,12 @@ const GameBoard = ({ onGameEnd, currentPlayer, setCurrentPlayer }: GameBoardProp
           description: `Player ${winner} wins!`,
           variant: "default",
           className: winner === 'X' ? 'bg-primary' : 'bg-secondary',
+          duration: 3000,
         });
         onGameEnd(winner);
       }
     }
-  }, [board, onGameEnd, toast]);
+  }, [board, onGameEnd, toast, gameOver]);
 
   return (
     <div className="my-8 w-full max-w-md mx-auto">
