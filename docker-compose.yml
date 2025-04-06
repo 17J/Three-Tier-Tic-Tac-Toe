@@ -5,7 +5,7 @@ services:
   # Frontend React application
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "80:80"
@@ -17,7 +17,7 @@ services:
   # Java Spring Boot backend
   backend:
     build:
-      context: ./backend  # Assumes the Java backend code is in a 'backend' folder
+      context: ./backend  
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -42,8 +42,6 @@ services:
       - MYSQL_ROOT_PASSWORD=root_password
     volumes:
       - mysql-data:/var/lib/mysql
-      # You can add initialization scripts if needed:
-      # - ./mysql/init:/docker-entrypoint-initdb.d
     networks:
       - app-network
 

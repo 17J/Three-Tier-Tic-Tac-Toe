@@ -1,73 +1,59 @@
-# Welcome to your Lovable project
 
-## Project info
+# Tic-Tac-Nexus Game
 
-**URL**: https://lovable.dev/projects/aafe964a-5b00-41ee-97b3-ef357a9f1942
+A full-stack application with React frontend and Spring Boot backend.
 
-## How can I edit this code?
+## Project Structure
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/aafe964a-5b00-41ee-97b3-ef357a9f1942) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+project-root/
+├── frontend/           # React frontend application
+│   ├── public/         # Static files
+│   ├── src/            # Source code
+│   ├── Dockerfile      # Frontend Docker configuration
+│   └── ...             # Other frontend config files
+│
+├── backend/            # Spring Boot backend application
+│   ├── src/            # Source code
+│   ├── Dockerfile      # Backend Docker configuration
+│   └── ...             # Other backend config files
+│
+├── docker-compose.yml  # Docker compose configuration
+└── README.md           # This file
 ```
 
-**Edit a file directly in GitHub**
+## Development
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
+- Docker and Docker Compose
+- Node.js and npm (for local frontend development)
+- Java and Maven (for local backend development)
 
-**Use GitHub Codespaces**
+### Running with Docker
+```bash
+# Start all services
+docker-compose up
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Build and start all services
+docker-compose up --build
 
-## What technologies are used for this project?
+# Start specific service
+docker-compose up frontend
+docker-compose up backend
+```
 
-This project is built with:
+### Local Development
+```bash
+# Frontend
+cd frontend
+npm install
+npm run dev
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Backend
+cd backend
+./mvnw spring-boot:run
+```
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/aafe964a-5b00-41ee-97b3-ef357a9f1942) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Accessing the Application
+- Frontend: http://localhost
+- Backend API: http://localhost:8080
