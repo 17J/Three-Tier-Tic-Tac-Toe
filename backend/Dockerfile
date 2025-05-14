@@ -1,26 +1,18 @@
 
-# Build stage
-FROM maven:3.8.5-openjdk-21-slim AS build
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy the Maven configuration files
-COPY pom.xml .
-COPY src ./src
+COPY requirements.txt .
 
-# Build the application
-RUN mvn clean package -DskipTests
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Runtime stage
-FROM openjdk:21-slim
+COPY . .
 
-WORKDIR /app
+# Create a .env file in the container if it doesn't exist
+RUN touch .env
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/*.jar app.jar
+EXPOSE 5000
 
-# Expose the port
-EXPOSE 8080
-
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Use environment variables from .env file
+CMD ["python", "app.py"]
