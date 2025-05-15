@@ -1,0 +1,69 @@
+---
+# Deployment for Java Backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1 # For production, increase replicas for high availability
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-container
+          image: 17rj/three-tier-game-backend:latest # Replace with your Java app image. Use specific tags instead of 'latest'.
+          ports:
+            - containerPort: 8080 # Default Spring Boot port, or your configured port.
+          env: #Pass database connection properties
+            - name: POSTGRES_DB
+              value: gamerzo #replace yourdatabase
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres #replace
+          # Add resource requests/limits for production
+          # resources:
+          #   requests:
+          #     cpu: "200m"
+          #     memory: "256Mi"
+          #   limits:
+          #     cpu: "1000m"
+          #     memory: "1Gi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/health # Spring Boot actuator health endpoint
+          #     port: 8080
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /actuator/health # Spring Boot actuator health endpoint
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
+          # startupProbe:
+          #   httpGet:
+          #     path: /actuator/health # Spring Boot actuator health endpoint
+          #     port: 8080
+          #   failureThreshold: 30
+          #   periodSeconds: 10
+
+---
+# Service for Java Backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 5000 # Service port
+      targetPort: 5000 # Container port
+  type: ClusterIP # Good for internal communication.

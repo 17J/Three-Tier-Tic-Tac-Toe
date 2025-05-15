@@ -1,0 +1,64 @@
+# Deployment for React Frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1 # For production, increase replicas for high availability
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend-container
+          image: 17rj/three-tier-game-frontend:latest # Replace with your React app image. Use specific tags instead of 'latest' for immutability
+          ports:
+            - containerPort: 80 # Default React port
+          env:
+            - name: REACT_APP_BACKEND_URL
+              value: "http://backend-service:5000" # Replace with actual backend service name if different
+          # Add resource requests/limits for production
+          # resources:
+          #   requests:
+          #     cpu: "100m"
+          #     memory: "128Mi"
+          #   limits:
+          #     cpu: "500m"
+          #     memory: "512Mi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 3000
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 3000
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 5
+          # startupProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 3000
+          #   failureThreshold: 30
+          #   periodSeconds: 10
+
+---
+# Service for React Frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80 # Service port
+      targetPort: 80 # Container port
+  type: LoadBalancer # For production, use LoadBalancer for external access, or Ingress for more advanced routing
