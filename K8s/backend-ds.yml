@@ -1,5 +1,5 @@
 ---
-# Deployment for Java Backend
+# Deployment for Backend
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,7 +54,7 @@ spec:
           #   periodSeconds: 10
 
 ---
-# Service for Java Backend
+# Service for  Backend
 apiVersion: v1
 kind: Service
 metadata:
