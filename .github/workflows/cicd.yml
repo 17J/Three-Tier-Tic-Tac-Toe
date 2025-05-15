@@ -49,6 +49,23 @@ jobs:
         docker build -t 17rj/three-tier-game-backend backend/
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
         docker push 17rj/three-tier-game-backend:latest
+        
+  deploy-k8s-aks:
+    needs: backend-build
+    runs-on: self-hosted
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS context
+        run: |
+          az aks get-credentials --resource-group gitlab --name dev --overwrite-existing
+
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f k8s/
 
     
   
