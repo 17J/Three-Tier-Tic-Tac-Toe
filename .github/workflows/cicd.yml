@@ -7,7 +7,7 @@ on:
 
 
 jobs:
-  build:
+  frontend-build:
 
     runs-on: self-hosted
 
@@ -29,5 +29,26 @@ jobs:
       run: |
         docker build -t 17rj/three-tier-game-frontend frontend/
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-        docker push 17rj/three-tier-game-frontend:${{ steps.set-version.outputs.image_version }}
         docker push 17rj/three-tier-game-frontend:latest
+        
+  backend-build:
+    needs: frontend-build
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+    
+    - name: Docker Build and Push (Backend)
+      run: |
+        docker build -t 17rj/three-tier-game-backend backend/
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker push 17rj/three-tier-game-backend:latest
+
+    
+  
