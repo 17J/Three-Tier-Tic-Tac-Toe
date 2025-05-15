@@ -65,7 +65,8 @@ jobs:
 
       - name: Deploy to AKS
         run: |
-          kubectl apply -f k8s/
+          cd /home/azureuser/actions-runner/_work/Three-Tier-Game-App/Three-Tier-Game-App/
+          kubectl apply -f ./K8s/
 
     
   
