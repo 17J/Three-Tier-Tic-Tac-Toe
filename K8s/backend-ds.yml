@@ -18,7 +18,7 @@ spec:
         - name: backend-container
           image: 17rj/three-tier-game-backend:latest # Replace with your Java app image. Use specific tags instead of 'latest'.
           ports:
-            - containerPort: 8080 # Default Spring Boot port, or your configured port.
+            - containerPort: 5000 # Default port, or your configured port.
           env: #Pass database connection properties
             - name: POSTGRES_DB
               value: gamerzo #replace yourdatabase
