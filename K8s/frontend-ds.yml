@@ -1,10 +1,13 @@
-# Deployment for React Frontend
+# frontend-deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-deployment
+  labels:
+    app: frontend
+    tier: frontend
 spec:
-  replicas: 1 # For production, increase replicas for high availability
+  replicas: 2
   selector:
     matchLabels:
       app: frontend
@@ -12,53 +15,65 @@ spec:
     metadata:
       labels:
         app: frontend
+        tier: frontend
     spec:
       containers:
         - name: frontend-container
-          image: 17rj/three-tier-game-frontend:latest # Replace with your React app image. Use specific tags instead of 'latest' for immutability
+          image: 17rj/three-tier-game-frontend:latest
+          imagePullPolicy: Always
           ports:
-            - containerPort: 80 # Default React port
+            - containerPort: 80
+              name: http
           env:
             - name: REACT_APP_BACKEND_URL
-              value: "http://backend-service:5000" # Replace with actual backend service name if different
-          # Add resource requests/limits for production
-          # resources:
-          #   requests:
-          #     cpu: "100m"
-          #     memory: "128Mi"
-          #   limits:
-          #     cpu: "500m"
-          #     memory: "512Mi"
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 3000
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 10
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 3000
-          #   initialDelaySeconds: 15
-          #   periodSeconds: 5
-          # startupProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 3000
-          #   failureThreshold: 30
-          #   periodSeconds: 10
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: BACKEND_SERVICE_URL
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /
+              port: 80
+            failureThreshold: 30
+            periodSeconds: 10
 
 ---
-# Service for React Frontend
+# frontend-service.yml
 apiVersion: v1
 kind: Service
 metadata:
   name: frontend-service
+  labels:
+    app: frontend
 spec:
   selector:
     app: frontend
   ports:
     - protocol: TCP
-      port: 80 # Service port
-      targetPort: 80 # Container port
-  type: LoadBalancer # For production, use LoadBalancer for external access, or Ingress for more advanced routing
+      port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP # Changed to ClusterIP since we're using Ingress
